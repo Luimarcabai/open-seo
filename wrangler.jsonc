@@ -1,0 +1,56 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "open-seo",
+  "main": "src/server.ts",
+  "compatibility_date": "2025-09-02",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+  },
+  // Uncomment when deploying to the openseo.so Cloudflare account. Self-hosters
+  // should leave this commented (or replace with their own zone) — otherwise
+  // `wrangler deploy` fails with "Could not find zone for app.openseo.so".
+  // "routes": [
+  //   { "pattern": "app.openseo.so", "custom_domain": true },
+  //   { "pattern": "www.app.openseo.so", "custom_domain": true },
+  // ],
+  "workflows": [
+    {
+      "name": "site-audit-workflow",
+      "binding": "SITE_AUDIT_WORKFLOW",
+      "class_name": "SiteAuditWorkflow",
+    },
+    {
+      "name": "rank-check-workflow",
+      "binding": "RANK_CHECK_WORKFLOW",
+      "class_name": "RankCheckWorkflow",
+    },
+  ],
+  "triggers": {
+    "crons": ["*/15 * * * *"],
+  },
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "2bd31bf1d43640568e0b3fc26888475f",
+    },
+    {
+      "binding": "OAUTH_KV",
+      "id": "e60f36d4375b43ee95f0bd1269fd7ebf",
+    },
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "my-open-seo-db",
+      "database_id": "523eb655-9ea0-4b19-8a80-5b2e3f7c553a",
+      "migrations_dir": "drizzle",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "my-open-seo-r2",
+      "binding": "R2","preview_bucket_name": "my-open-seo-r2",
+    },
+  ],
+}
